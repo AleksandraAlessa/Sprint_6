@@ -44,10 +44,6 @@ geckodriver.exe
 yandexdriver.exe
 msedgedriver.exe
 
-# Результаты Allure
-allure_results/
-allure-report/
-
 # Системные файлы (Windows/Mac)
 Thumbs.db
 .DS_Store
