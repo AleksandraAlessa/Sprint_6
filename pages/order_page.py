@@ -62,27 +62,30 @@ class OrderPage(BasePage):
         self.set_phone(phone)
         self.click_next()
         # Явное ожидание появления поля даты (вторая форма)
-        self.wait.until(EC.visibility_of_element_located(self.DATE_FIELD))
+        self.wait_for_visibility(self.DATE_FIELD)
 
     # ---------- Методы для заполнения второй формы ----------
     @allure.step("Когда привезти самокат: {date}")
     def set_date(self, date):
-        date_field = self.wait.until(EC.visibility_of_element_located(self.DATE_FIELD))
+        date_field = self.wait_for_visibility(self.DATE_FIELD)
         date_field.clear()
         date_field.send_keys(date)
         date_field.send_keys(Keys.RETURN)
 
     @allure.step("Выбрать срок аренды: {rental_days}")
     def select_rental_period(self, rental_days):
-        dropdown = self.wait.until(EC.element_to_be_clickable(self.RENTAL_PERIOD_DROPDOWN))
-        self.driver.execute_script("arguments[0].click();", dropdown)
+        # открыть дропдаун через JS
+        dropdown = self.wait_for_clickable(self.RENTAL_PERIOD_DROPDOWN)
+        self.click_by_js(self.RENTAL_PERIOD_DROPDOWN)
 
+        # ждем появления опций
         self.wait.until(EC.presence_of_element_located((By.CLASS_NAME, "Dropdown-option")))
 
+        # выбираем нужную опцию
         option_locator = (By.XPATH, f"//div[contains(@class, 'Dropdown-option') and text()='{rental_days}']")
-        option = self.wait.until(EC.element_to_be_clickable(option_locator))
-        self.driver.execute_script("arguments[0].click();", option)
-
+        option = self.wait_for_clickable(option_locator)
+        self.click_by_js(option_locator)   # или self.click_by_js(option)
+        
     @allure.step("Выбрать цвет самоката: {color}")
     def select_color(self, color):
         if color == "чёрный жемчуг" or color == "Чёрный жемчуг":
